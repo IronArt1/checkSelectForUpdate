@@ -1,7 +1,11 @@
 # checkSelectForUpdate
 
 # please, run the following commands in a terminal(ignore the sign - $):
-$ docker compose up -d
+$ docker compose up
+# in logs you need to pay attention for requests to "select_ms_nginx" in order to make sure there are concurrent requests
+
+$ docker exec select_ms composer install
+# 
 $ docker exec select_ms bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 $ docker exec select_ms bin/console doctrine:fixtures:load --no-interaction
 

@@ -13,6 +13,6 @@ RUN apk add git;
 
 WORKDIR /app
 COPY . .
-RUN composer install
+#RUN composer install
 
 #CMD symfony server:start
