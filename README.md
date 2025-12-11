@@ -7,6 +7,18 @@ $ docker compose up
 # during "composer install" there would be several errors in a directory vendor/owlcorp/doctrine-microseconds-datetime/src/DBAL/Types
 # regarding to types compatibilities... Those needs to be fixed on the spot... 
 $ docker exec select_ms composer install
+$ sudo chmod 775 -R vendor
+# change "arthure" to your user name
+$ sudo chown arthure.apache -R vendor
+# just add types(string OR mixed) to the following files:
+OwlCorp\DoctrineMicrotime\DBAL\Types\BaseDateTimeMicroWithoutTz::getSQLDeclaration(...): string
+OwlCorp\DoctrineMicrotime\DBAL\Types\DateTimeMicroType::convertToDatabaseValue(...): mixed
+OwlCorp\DoctrineMicrotime\DBAL\Types\DateTimeMicroType::convertToPHPValue(...): mixed
+OwlCorp\DoctrineMicrotime\DBAL\Types\DateTimeImmutableMicroType::convertToDatabaseValue(): mixed
+OwlCorp\DoctrineMicrotime\DBAL\Types\DateTimeImmutableMicroType::convertToPHPValue(...): mixed
+
+
+
 $ docker exec select_ms bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 $ docker exec select_ms bin/console doctrine:fixtures:load --no-interaction
 
