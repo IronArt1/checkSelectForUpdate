@@ -31,6 +31,6 @@ final class MakePurchaseController extends AbstractController
     {
         $transactions = $purchaseProcessingService->buyItem2($purchasePayload->userId, $purchasePayload->itemId);
 
-        return is_array($transactions) ? new JsonResponse($transactions) : new JsonResponse(['failed']);
+        return $transactions ? new JsonResponse(['succeed']) : new JsonResponse(['failed']);
     }
 }
