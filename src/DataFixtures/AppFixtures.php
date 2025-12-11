@@ -14,7 +14,7 @@ class AppFixtures extends Fixture
     {
         $user = new User();
         $user->setEmail('test@gmail.com');
-        $user->setBalance(130);
+        $user->setBalance(1300);
         $manager->persist($user);
 
         $item = new Item();
