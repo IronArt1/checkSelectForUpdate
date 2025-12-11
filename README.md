@@ -28,3 +28,24 @@ $ curl -X POST -H "Content-Type: application/json" http://localhost:8077/make/pu
 
 # (TEST 2 is) it makes a call in a console (10 threads by 10 times are running):
 $ seq 1 1000 | xargs -I $ -n1 -P10 curl -X POST -H "Content-Type: application/json" http://localhost:8077/make/purchase2 -d '{"userId":1,"itemId":1}'
+
+
+An initial task during the interview is:
+```php
+public function buyItem($userId, $itemId)
+{
+    $db = DB::getInstance();
+
+    $user = $db->one("SELECT * FROM Users WHERE id = $userId");
+    $item = $db->one("SELECT * FROM Items WHERE id = $itemId");
+
+    if ($user->balance < $item->cost) {
+        return false;
+    }
+    
+    $db->exec("UPDATE Users SET balance = balance - {$item->cost} WHERE id=$userId");
+    $db->exec("INSERT INTO UsersItems (item_id, user_id) VALUES ($itemId, $userId)");
+
+    return true;
+}
+```
