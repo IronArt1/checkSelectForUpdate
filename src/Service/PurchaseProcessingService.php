@@ -82,7 +82,7 @@ final class PurchaseProcessingService
         $transactionsSmt = $conn->query('select * from transaction');
 
         return $transactionsSmt->fetchAll();
-}
+    }
 
     private function getDBInstance(): \PDO
     {
@@ -135,5 +135,27 @@ final class PurchaseProcessingService
         $transaction->setCreated(new \DateTimeImmutable());
         $this->em->persist($transaction);
         $this->em->flush();
+    }
+
+    public function buyItem2(int $userId, int $itemId): bool|array
+    {
+        // we do NOT use the EntityManager here in order to stick to the task initial code!
+        /** @var \PDO $conn */
+        $conn = $this->getDBInstance();
+
+        $item = $this->getDataFromDB($conn, 'item', 'itemId', $itemId);
+        $user = $this->getDataFromDB($conn, 'user', 'userId', $userId);
+
+        $stm = $conn->prepare("UPDATE user SET balance = balance - :itemCost WHERE id=:userId");
+        $stm->bindValue(":itemCost", $item['cost'], \PDO::PARAM_INT);
+        $stm->bindValue(":userId", $user['id'], \PDO::PARAM_INT);
+        $stm->execute();
+
+        $stm = $conn->prepare("INSERT INTO user_item (item_id, user_id) VALUES (:itemId, :userId)");
+        $stm->bindValue(":itemId", $item['id'], \PDO::PARAM_INT);
+        $stm->bindValue(":userId", $user['id'], \PDO::PARAM_INT);
+        $stm->execute();
+
+        return true;
     }
 }
